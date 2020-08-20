@@ -13,6 +13,6 @@ CREATE TABLE menus (
 );
 ```
 
-To start up the Express server, run `npm run start`. This will start it with
+To start up the Express server, run `npm run devstart`. This will start it with
 Nodemon, so the server will automatically restart whenever you make changes to
 important files. You can view it at `localhost:5000`.
