@@ -10,7 +10,7 @@ client
       // https://www.twilio.com/docs/voice/twiml/pause
       twiml: '<Response><Pause length="5"/><Say>Bye</Say><Hangup/></Response>',
       recordingStatusCallbackMethod: 'GET',
-      recordingStatusCallback: 'https://galley-menu.herokuapp.com/',
+      recordingStatusCallback: 'https://galley-menu.herokuapp.com/addToDatabase',
       from: '+14193183668',
       to: '+18507188243' //'+18504527059'
     })
