@@ -33,7 +33,6 @@ app
       let day = currentDate.getDay();
       if (lastDate && lastDate.getDate() == currentDate.getDate() || day == 0 || day == 6) {
         console.log("The latest menu is available! Sending now...");
-        menu.send(menuRecording);
         return res.send(menuRecording);
       }
 
@@ -50,7 +49,11 @@ app
 
       const client = await pool.connect();
       await client.query(`INSERT INTO menus (menu_recording) VALUES ('${RecordingUrl}.wav');`)
-        .then(result => console.log("Inserted row into menus!"))
+        .then(result => {
+          // Only sends the menu each time a new menu is gotten
+          console.log("Inserted row into menus!");
+          menu.send(menuRecording);
+        })
         .catch(err => console.error(err))
         .finally(() => client.end());
       

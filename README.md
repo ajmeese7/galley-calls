@@ -23,3 +23,8 @@ filling in your server's information where appropriate. If you want to
 ### Wishlist
 - It would be ideal if the audio file was transcribed and sent as text,
 instead of as a `.wav` file like the current implementation.
+- Figure out the job of scheduling, and how I want to handle it.
+- Look into using an embed with the files, so I can have a hyperlink asking
+for any generous donations and stars for the repository.
+    - Try to combine the [embed](https://stackoverflow.com/questions/45622168/sending-attachments-in-embed-field)
+    and the [hyperlink](https://stackoverflow.com/questions/54753005/is-there-any-way-to-embed-a-hyperlink-in-a-richembed).
