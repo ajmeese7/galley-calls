@@ -56,6 +56,7 @@ app
       
       const https = require("https");
       https.get('https://galley-menu.herokuapp.com/getMenu', res => console.log("Pinging /getMenu!"));
+      res.send(null);
   })
   .get('*', (req, res) => res.render('error'))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
