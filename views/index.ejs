@@ -20,13 +20,13 @@
             <img src="menu.png" id="banner" alt="Menu" />
         </a>
 
-        <!-- TODO: Have daily recording if available, and if not have a 'Make call' button
-            that runs make_call.js -->
-
-        <div class="d-flex justify-content-center">
-            <div class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
-        </div>
+        <figure id="audio">
+            <figcaption>Listen to the latest menu recording:</figcaption>
+            <audio id="latest_menu" controls>
+                Your browser does not support the
+                <code>audio</code> element.
+            </audio>
+        </figure>
+        <p id="noAudio">The menu for today is not available yet! Please check back later :)</p>
     </body>
 </html>
