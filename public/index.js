@@ -9,7 +9,7 @@ function getAudio() {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
             updateAudioSource(xmlHttp.responseText);
     }
-    xmlHttp.open("GET", "http://localhost:5000/getMenu", true); // true for asynchronous 
+    xmlHttp.open("GET", "https://galley-menu.herokuapp.com/getMenu", true);
     xmlHttp.send(null);
 }
 

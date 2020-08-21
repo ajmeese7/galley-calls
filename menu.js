@@ -10,7 +10,7 @@ function getMenu(client) {
       .finally(() => client.end());
 
     // Returns in format that allows for destructuring assignment
-    return result ? [result.date, result.menu_recording] : null;
+    return result ? [result.date, result.menu_recording] : [0,0];
   }
 
   return (async () => await menu() )();
