@@ -33,7 +33,7 @@ app
       let day = currentDate.getDay();
       if (lastDate.getDate() == currentDate.getDate() || day == 0 || day == 6) {
         console.log("The latest menu is available! Sending now...");
-        sendMenu.send(menuRecording);
+        menu.send(menuRecording);
         return res.send(menuRecording);
       }
 
