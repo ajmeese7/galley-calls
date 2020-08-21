@@ -52,7 +52,7 @@ app
         .then(result => {
           // Only sends the menu each time a new menu is gotten
           console.log("Inserted row into menus!");
-          menu.send(menuRecording);
+          menu.send(`${RecordingUrl}.wav`);
         })
         .catch(err => console.error(err))
         .finally(() => client.end());
