@@ -31,7 +31,7 @@ app
       // Doesn't insert the menu if it is a weekend or the same date as the last one
       let currentDate = new Date();
       let day = currentDate.getDay();
-      if (lastDate.getDate() == currentDate.getDate() || day == 0 || day == 6) {
+      if (lastDate && lastDate.getDate() == currentDate.getDate() || day == 0 || day == 6) {
         console.log("The latest menu is available! Sending now...");
         menu.send(menuRecording);
         return res.send(menuRecording);
