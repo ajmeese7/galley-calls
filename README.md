@@ -18,7 +18,7 @@ Nodemon, so the server will automatically restart whenever you make changes to
 important files. You can view it at `localhost:5000`.
 
 To start a local Postgres server, run `psql postgresql://[user[:password]@][netloc][:port][/dbname]`,
-filling in your server's information where appropriate. If you want to 
+filling in your server's information where appropriate.
 
 ### Wishlist
 - It would be ideal if the audio file was transcribed and sent as text,
