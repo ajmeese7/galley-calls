@@ -19,8 +19,7 @@ function getMenu(client) {
 function sendMenu(RecordingUrl) {
   const client = new Discord.Client();
   client.on('ready', async () => {
-    let testChannelId = "682369205735260185";
-    let realChannelId = "559457192860712963";
+    let channelId = "559457192860712963";
 
     // Set message variables depending on the date
     let date = new Date();
@@ -32,7 +31,7 @@ function sendMenu(RecordingUrl) {
 
     // Create and format the final message and send it
     let message = `Here's the recording of the galley menu for ${days[dayOfWeek]}, ${month} ${ordinalDate}!`;
-    let channel = client.channels.cache.get(testChannelId);
+    let channel = client.channels.cache.get(channelId);
     await channel.send(message, {
       files: [{
         attachment: RecordingUrl,
