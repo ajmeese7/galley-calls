@@ -37,7 +37,7 @@ function sendMenu(RecordingUrl) {
         attachment: RecordingUrl,
         name: "menu_recording.wav"
       }]
-    });
+    }).catch(console.error);
     console.log("The menu has been sent!");
 
     // Reacts to own message
