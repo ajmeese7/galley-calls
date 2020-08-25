@@ -1,5 +1,3 @@
-# galley-calls
-
 <p align="center">
   <h1 align="center">☎️Galley Calls☎️</h1>
 </p>
