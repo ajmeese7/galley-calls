@@ -1,5 +1,21 @@
 # galley-calls
-Call the galley menu line and send the transcribed menu in Discord.
+
+<p align="center">
+  <h1 align="center">☎️Galley Calls☎️</h1>
+</p>
+
+<p align="center">
+   <img src="https://img.shields.io/badge/language-JavaScript-yellow"/>
+   <img src="https://img.shields.io/github/license/ajmeese7/galley-calls"/>
+   <img src="https://img.shields.io/github/stars/ajmeese7/galley-calls"/>
+   <img src="https://img.shields.io/github/forks/ajmeese7/galley-calls"/>
+   <img src="https://img.shields.io/static/v1?label=%F0%9F%8C%9F&message=If%20Useful&style=style=flat&color=BC4E99" alt="Star Badge"/>
+</p>
+
+<p align="center">Call the galley menu line and send the recording in Discord.</p>
+<p align="center">
+<img alt="Discord message example" title="Discord message example" src="https://user-images.githubusercontent.com/17814535/91178907-6f572680-e6ab-11ea-9d56-3ca7e98ec928.png" />
+</p>
 
 ## Developing
 You can replicate the PostgreSQL table structure by running the following query
