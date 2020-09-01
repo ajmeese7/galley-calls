@@ -16,7 +16,9 @@ function getMenu(client) {
   return (async () => await menu() )();
 }
 
-function sendMenu(RecordingUrl) {
+// Sends the message recording in the specified Discord channel
+// via the GalleyBot bot user
+function sendMenu(recordingUrl, transcription) {
   const client = new Discord.Client();
   client.on('ready', async () => {
     let channelId = "559457192860712963";
@@ -34,10 +36,14 @@ function sendMenu(RecordingUrl) {
     let channel = client.channels.cache.get(channelId);
     await channel.send(message, {
       files: [{
-        attachment: RecordingUrl,
+        // IDEA: Attach the transcription file name here instead, w/ the date?
+        attachment: recordingUrl,
         name: "menu_recording.wav"
       }]
     }).catch(console.error);
+
+    message = `Here is the transcription, if you prefer to read: \n\n ${transcription}`;
+    await channel.send(message);
     console.log("The menu has been sent!");
 
     // Reacts to own message

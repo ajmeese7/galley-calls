@@ -10,9 +10,9 @@
    <img src="https://img.shields.io/static/v1?label=%F0%9F%8C%9F&message=If%20Useful&style=style=flat&color=BC4E99" alt="Star Badge"/>
 </p>
 
-<p align="center">Call the galley menu line and send the recording in Discord.</p>
+<p align="center">Call the galley menu line and send the recording & transcription in Discord.</p>
 <p align="center">
-<img alt="Discord message example" title="Discord message example" src="https://user-images.githubusercontent.com/17814535/91178907-6f572680-e6ab-11ea-9d56-3ca7e98ec928.png" />
+<img alt="Discord message example" title="Discord message example" src="https://user-images.githubusercontent.com/17814535/91852193-18f76400-ec26-11ea-9252-0a79ca76a65f.png" />
 </p>
 
 ## Developing
@@ -23,6 +23,7 @@ on your local Postgres server:
 CREATE TABLE menus (
     id SERIAL PRIMARY KEY,
     menu_recording text,
+    transcription varchar,
     date TIMESTAMP default CURRENT_TIMESTAMP
 );
 ```
@@ -34,9 +35,14 @@ important files. You can view it at `localhost:5000`.
 To start a local Postgres server, run `psql postgresql://[user[:password]@][netloc][:port][/dbname]`,
 filling in your server's information where appropriate.
 
+You should create a `.env` file with the following values assigned:
+- TWILIO_ACCOUNT_SID
+- TWILIO_AUTH_TOKEN
+- DATABASE_URL
+- BOT_TOKEN
+- SONIX_API_KEY
+
 ### Wishlist
-- It would be ideal if the audio file was transcribed and sent as text,
-instead of as a `.wav` file like the current implementation.
 - Figure out the job of scheduling, and how I want to handle it.
 - Look into using an embed with the files, so I can have a hyperlink asking
 for any generous donations and stars for the repository.
