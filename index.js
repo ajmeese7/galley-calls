@@ -1,4 +1,5 @@
 const express = require('express');
+const fetch = require('node-fetch');
 const path = require('path');
 const PORT = process.env.PORT || 5000; // Heroku or local
 const menu = require('./menu');
@@ -44,22 +45,91 @@ app
       res.send(null);
   })
   .get('/addToDatabase', async (req, res) => {
-      let RecordingUrl = req.query.RecordingUrl;
-      if (!RecordingUrl) return res.render('error');
+      let recordingUrl = req.query.RecordingUrl;
+      if (!recordingUrl) return res.render('error');
+      recordingUrl = `${recordingUrl}.wav`;
+
+      const date = new Date();
+      const month = date.toLocaleString("default", { month: "short" });
+      const fileName = `${month}_${date.getDate()}_${date.getFullYear()}`;
+      const transcript_id = await createTranscript(recordingUrl, fileName);
+      console.log("Transcription ID:", transcript_id);
+
+      await transcriptReady(transcript_id);
+      console.log("Transcript ready!");
+
+      const transcription = await getTranscript(transcript_id);
+      console.log("Transcription:", transcription);
 
       const client = await pool.connect();
-      await client.query(`INSERT INTO menus (menu_recording) VALUES ('${RecordingUrl}.wav');`)
+      await client.query(`INSERT INTO menus (menu_recording, transcription) VALUES ('${recordingUrl}', '${transcription}');`)
         .then(result => {
           // Only sends the menu each time a new menu is gotten
           console.log("Inserted row into menus!");
-          menu.send(`${RecordingUrl}.wav`);
+          menu.send(recordingUrl, transcription);
         })
         .catch(err => console.error(err))
         .finally(() => client.end());
       
       const https = require("https");
       https.get('https://galley-menu.herokuapp.com/getMenu', res => console.log("Pinging /getMenu!"));
-      res.send(null);
+      res.send(null); // NOTE: Can I do this before everything else for testing?
   })
   .get('*', (req, res) => res.render('error'))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
+
+async function createTranscript(recordingUrl, fileName) {
+  const options = {
+    file_url: recordingUrl,
+    language: 'en',
+    name: fileName,
+    keywords: 'NAS, Pensacola, galley, menu'
+  };
+
+  return await fetch('https://api.sonix.ai/v1/media', {
+    method: 'POST',
+    body: JSON.stringify(options),
+    headers: {
+      'Authorization': `Bearer ${process.env.SONIX_API_KEY}`,
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(res => res.json())
+  .then(json => json.id);
+}
+
+// Loops continuously every 7.5 seconds until transcript is completed
+async function transcriptReady(transcript_id) {
+  let sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+  await checkStatus();
+  
+  async function checkStatus() {
+    let status;
+    await fetch(`https://api.sonix.ai/v1/media/${transcript_id}`, {
+      method: 'GET',
+      cache: 'no-store',
+      headers: {
+        'Authorization': `Bearer ${process.env.SONIX_API_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then(json => status = json.status);
+
+    if (status !== "completed") {
+      await sleep(7500);
+      await checkStatus();
+    }
+  }
+}
+
+// Turns the audio file into a transcription
+async function getTranscript(transcript_id) {
+  return await fetch(`https://api.sonix.ai/v1/media/${transcript_id}/transcript`, {
+    method: 'GET',
+    headers: { 'Authorization': `Bearer ${process.env.SONIX_API_KEY}` }
+  })
+  .then(res => res.text())
+  // Format the transcription down to just the text
+  .then(text => text.split("\n").slice(2).join("\n").substring(11));
+}
