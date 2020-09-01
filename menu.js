@@ -42,7 +42,7 @@ function sendMenu(recordingUrl, transcription) {
       }]
     }).catch(console.error);
 
-    message = `Here is the transcription, if you prefer to listen: \n\n ${transcription}`;
+    message = `Here is the transcription, if you prefer to read: \n\n ${transcription}`;
     await channel.send(message);
     console.log("The menu has been sent!");
 
