@@ -68,11 +68,10 @@ app
       const transcription = await transcript.get(transcript_id);
       console.log("Transcription:", transcription);
 
-      // TODO: Test if this will update the most recent menu record;
       // https://stackoverflow.com/a/36739415/6456163
       const client = await pool.connect();
-      await client.query(`UPDATE menus SET menu_recording='${recordingUrl}', 
-        transcription='${transcription}' WHERE id=(SELECT MAX(id) FROM menus);`)
+      await client.query(`UPDATE menus SET menu_recording=?, transcription=? 
+        WHERE id=(SELECT MAX(id) FROM menus);`, [recordingUrl, transcription])
         .then(result => {
           // Only sends the menu each time a new menu is gotten
           console.log("Updated menu with real data!");
