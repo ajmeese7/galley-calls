@@ -71,8 +71,8 @@ app
       // https://stackoverflow.com/a/36739415/6456163
       const client = await pool.connect();
       
-      await client.query(`UPDATE menus SET menu_recording='${escape_string(recordingUrl)}', 
-        transcription='${escape_string(transcription)}' WHERE id=(SELECT MAX(id) FROM menus);`)
+      await client.query(`UPDATE menus SET menu_recording='${recordingUrl}', 
+        transcription='${transcription.replace("'", "''")}' WHERE id=(SELECT MAX(id) FROM menus);`)
         .then(result => {
           // Only sends the menu each time a new menu is gotten
           console.log("Updated menu with real data!");
@@ -86,32 +86,3 @@ app
   })
   .get('*', (req, res) => res.render('error'))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
-
-// https://stackoverflow.com/a/32648526/6456163
-function escape_string(str) {
-  if (typeof str != 'string')
-    return str;
-
-  return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
-    switch (char) {
-      case "\0":
-        return "\\0";
-      case "\x08":
-        return "\\b";
-      case "\x09":
-        return "\\t";
-      case "\x1a":
-        return "\\z";
-      case "\n":
-        return "\\n";
-      case "\r":
-        return "\\r";
-      case "\"":
-      case "'":
-      case "\\":
-      case "%":
-        return "\\"+char; // prepends a backslash to backslash, percent,
-                          // and double/single quotes
-    }
-  });
-}
