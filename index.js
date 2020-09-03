@@ -1,5 +1,4 @@
 const express = require('express');
-const fetch = require('node-fetch');
 const path = require('path');
 const PORT = process.env.PORT || 5000; // Heroku or local
 const menu = require('./menu');
