@@ -54,6 +54,7 @@ app
       let recordingUrl = req.query.RecordingUrl;
       if (!recordingUrl) return res.render('error');
       recordingUrl = `${recordingUrl}.wav`;
+      res.send(null); // Prevents timeout error from showing in logs
 
       const date = new Date();
       const month = date.toLocaleString("default", { month: "short" });
@@ -82,11 +83,6 @@ app
       
       const https = require("https");
       https.get("https://galley-menu.herokuapp.com/getMenu", res => console.log("Pinging /getMenu!"));
-      
-      // There will be a timeout error in the logs, due to the
-      // time required for this process to complete. But there
-      // is no good workaround (yet).
-      res.send(null);
   })
   .get('*', (req, res) => res.render('error'))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
