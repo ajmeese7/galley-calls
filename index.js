@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const path = require('path');
 const PORT = process.env.PORT || 5000; // Heroku or local
 const menu = require('./menu');
+const transcript = require('./transcript');
 var app = express();
 
 require('dotenv').config();
@@ -26,18 +27,24 @@ app
     next();
   })
   .get('/getMenu', async (req, res) => {
-      const client = await pool.connect();
+      let client = await pool.connect();
       const [lastDate, menuRecording] = await menu.get(client);
+      if (menuRecording == "IN PROGRESS")
+        // Prevents the same menu from being requested multiple times at once
+        return console.log("Call already in progress...");
 
-      // Doesn't insert the menu if it is a weekend or the same date as the last one
-      let currentDate = new Date();
-      let day = currentDate.getDay();
+      // Doesn't insert the menu if it is a weekend or the same date as the last one;
+      // TODO: Make sure it's past 0700 or something before getting new menu
+      const currentDate = new Date();
+      const day = currentDate.getDay();
       if (lastDate && lastDate.getDate() == currentDate.getDate() || day == 0 || day == 6) {
         console.log("The latest menu is available! Sending now...");
         return res.send(menuRecording);
       }
 
       // Makes the call to get a new menu if one is needed
+      client = await pool.connect();
+      await menu.setRecordingStatus(client);
       require('child_process').fork('make_call.js');
       console.log("Making call to get latest menu...");
 
@@ -52,88 +59,35 @@ app
       const date = new Date();
       const month = date.toLocaleString("default", { month: "short" });
       const fileName = `${month}_${date.getDate()}_${date.getFullYear()}`;
-      const transcript_id = await createTranscript(recordingUrl, fileName);
+      const transcript_id = await transcript.create(recordingUrl, fileName);
       console.log("Transcription ID:", transcript_id);
 
-      await transcriptReady(transcript_id);
+      await transcript.isReady(transcript_id);
       console.log("Transcript ready!");
 
-      const transcription = await getTranscript(transcript_id);
+      const transcription = await transcript.get(transcript_id);
       console.log("Transcription:", transcription);
 
+      // TODO: Test if this will update the most recent menu record;
+      // https://stackoverflow.com/a/36739415/6456163
       const client = await pool.connect();
-      await client.query(`INSERT INTO menus (menu_recording, transcription) VALUES ('${recordingUrl}', '${transcription}');`)
+      await client.query(`UPDATE menus SET menu_recording='${recordingUrl}', 
+        transcription='${transcription} WHERE id=(SELECT MAX(id) FROM menus);`)
         .then(result => {
           // Only sends the menu each time a new menu is gotten
-          console.log("Inserted row into menus!");
+          console.log("Updated menu with real data!");
           menu.send(recordingUrl, transcription);
         })
         .catch(err => console.error(err))
         .finally(() => client.end());
       
       const https = require("https");
-      https.get('https://galley-menu.herokuapp.com/getMenu', res => console.log("Pinging /getMenu!"));
+      https.get("https://galley-menu.herokuapp.com/getMenu", res => console.log("Pinging /getMenu!"));
       
       // There will be a timeout error in the logs, due to the
       // time required for this process to complete. But there
-      // is no good workaround.
+      // is no good workaround (yet).
       res.send(null);
   })
   .get('*', (req, res) => res.render('error'))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
-
-async function createTranscript(recordingUrl, fileName) {
-  const options = {
-    file_url: recordingUrl,
-    language: 'en',
-    name: fileName,
-    keywords: 'NAS, Pensacola, galley, menu'
-  };
-
-  return await fetch('https://api.sonix.ai/v1/media', {
-    method: 'POST',
-    body: JSON.stringify(options),
-    headers: {
-      'Authorization': `Bearer ${process.env.SONIX_API_KEY}`,
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(res => res.json())
-  .then(json => json.id);
-}
-
-// Loops continuously every 7.5 seconds until transcript is completed
-async function transcriptReady(transcript_id) {
-  let sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-  await checkStatus();
-  
-  async function checkStatus() {
-    let status;
-    await fetch(`https://api.sonix.ai/v1/media/${transcript_id}`, {
-      method: 'GET',
-      cache: 'no-store',
-      headers: {
-        'Authorization': `Bearer ${process.env.SONIX_API_KEY}`,
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(res => res.json())
-    .then(json => status = json.status);
-
-    if (status !== "completed") {
-      await sleep(7500);
-      await checkStatus();
-    }
-  }
-}
-
-// Turns the audio file into a transcription
-async function getTranscript(transcript_id) {
-  return await fetch(`https://api.sonix.ai/v1/media/${transcript_id}/transcript`, {
-    method: 'GET',
-    headers: { 'Authorization': `Bearer ${process.env.SONIX_API_KEY}` }
-  })
-  .then(res => res.text())
-  // Format the transcription down to just the text
-  .then(text => text.split("\n").slice(2).join("\n").substring(11));
-}
