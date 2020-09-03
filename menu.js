@@ -1,7 +1,16 @@
 const Discord = require('discord.js');
 
+async function setRecordingStatus(client) {
+  await client.query("INSERT INTO menus (menu_recording) VALUES ('IN PROGRESS');")
+    // Only sends the menu each time a new menu is gotten
+    .then(result => console.log("Set menu status as recording!"))
+    .catch(err => console.error(err))
+    .finally(() => client.end());
+}
+
 // Selects most recent menu recording and its date
 function getMenu(client) {
+  // TODO: See if I can switch this up with the same thing as the fetch method
   const menu = async () => {
     var result;
     await client.query(`SELECT date, menu_recording FROM menus ORDER BY date DESC LIMIT 1;`)
@@ -21,10 +30,10 @@ function getMenu(client) {
 function sendMenu(recordingUrl, transcription) {
   const client = new Discord.Client();
   client.on('ready', async () => {
-    let channelId = "559457192860712963";
+    const channelId = "559457192860712963";
 
     // Set message variables depending on the date
-    let date = new Date();
+    const date = new Date();
     let dayOfWeek = date.getDay();
     if (dayOfWeek >= 5) dayOfWeek = 0;
     const days = ["the weekend of Friday", "Monday", "Tuesday", "Wednesday", "Thursday"];
@@ -33,7 +42,7 @@ function sendMenu(recordingUrl, transcription) {
 
     // Create and format the final message and send it
     let message = `Here's the recording of the galley menu for ${days[dayOfWeek]}, ${month} ${ordinalDate}!`;
-    let channel = client.channels.cache.get(channelId);
+    const channel = client.channels.cache.get(channelId);
     await channel.send(message, {
       files: [{
         // IDEA: Attach the transcription file name here instead, w/ the date?
@@ -77,5 +86,6 @@ function getOrdinalDate(n) {
   return n + (n > 0 ? ['th', 'st', 'nd', 'rd'][(n > 3 && n < 21) || n % 10 > 3 ? 0 : n % 10] : '');
 }
 
+exports.setRecordingStatus = setRecordingStatus;
 exports.send = sendMenu;
 exports.get = getMenu;
