@@ -5,7 +5,7 @@ const client = require('twilio')(accountSid, authToken);
 
 // Change length of call based on weekday/weekend
 let day = new Date().getDay();
-let call_length = (day == 0 || day >= 5) ? 115 : 35;
+let call_length = (day == 0 || day >= 5) ? 100 : 35;
 
 client
   .calls

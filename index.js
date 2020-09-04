@@ -70,7 +70,6 @@ app
 
       // https://stackoverflow.com/a/36739415/6456163
       const client = await pool.connect();
-      
       await client.query(`UPDATE menus SET menu_recording='${recordingUrl}', 
         transcription='${transcription.replace("'", "''")}' WHERE id=(SELECT MAX(id) FROM menus);`)
         .then(result => {
