@@ -3,11 +3,21 @@
 </p>
 
 <p align="center">
-   <img src="https://img.shields.io/badge/language-JavaScript-yellow"/>
-   <img src="https://img.shields.io/github/license/ajmeese7/galley-calls"/>
-   <img src="https://img.shields.io/github/stars/ajmeese7/galley-calls"/>
-   <img src="https://img.shields.io/github/forks/ajmeese7/galley-calls"/>
-   <img src="https://img.shields.io/static/v1?label=%F0%9F%8C%9F&message=If%20Useful&style=style=flat&color=BC4E99" alt="Star Badge"/>
+  <a href="https://github.com/ajmeese7/galley-calls/search?l=javascript">
+    <img src="https://img.shields.io/badge/language-JavaScript-yellow" alt="JavaScript" />
+  </a>
+  <a href="https://github.com/ajmeese7/galley-calls/blob/master/LICENSE.md">
+    <img src="https://img.shields.io/github/license/ajmeese7/galley-calls" alt="License" />
+  </a>
+  <a href="https://github.com/ajmeese7/galley-calls/stargazers">
+    <img src="https://img.shields.io/github/stars/ajmeese7/galley-calls" alt="Stars" />
+  </a>
+  <a href="https://github.com/ajmeese7/galley-calls/network/members">
+    <img src="https://img.shields.io/github/forks/ajmeese7/galley-calls" alt="Forks" />
+  </a>
+  <a href="https://github.com/ajmeese7/galley-calls/stargazers">
+    <img src="https://img.shields.io/static/v1?label=%F0%9F%8C%9F&message=If%20Useful&style=style=flat&color=BC4E99" alt="Leave a Star!"/>
+  </a>
 </p>
 
 <p align="center">Call the galley menu line and send the recording & transcription in Discord.</p>
