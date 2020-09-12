@@ -55,6 +55,8 @@ async function getTranscript(transcript_id) {
   .then(res => res.text())
   // Format the transcription down to just the text
   .then(text => text.split("\n").slice(2).join("\n"))
+  // Line break after every sentence for readability
+  .then(text => text.split(". ").join(".\n"))
   .catch(err => console.error(err));
 }
 
