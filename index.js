@@ -71,7 +71,7 @@ app
       // https://stackoverflow.com/a/36739415/6456163
       const client = await pool.connect();
       await client.query(`UPDATE menus SET menu_recording='${recordingUrl}', 
-        transcription='${transcription.replaceAll("'", "''")}' WHERE id=(SELECT MAX(id) FROM menus);`)
+        transcription='${transcription.replace(/'/g, "''")}' WHERE id=(SELECT MAX(id) FROM menus);`)
         .then(result => {
           // Only sends the menu each time a new menu is gotten
           console.log("Updated menu with real data!");
